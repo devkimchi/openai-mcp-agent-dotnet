@@ -17,8 +17,8 @@ services:
   mcptodo-serverapp:
     project: src/McpTodo.ServerApp
     host: containerapp
-    language: ts
+    language: dotnet
     docker:
-      path: Dockerfile
-      context: .
+      path: ../../Dockerfile.server
+      context: ../../
       remoteBuild: true

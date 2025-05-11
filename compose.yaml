@@ -8,10 +8,10 @@ services:
   todo-server:
     container_name: todo-server
     build:
-      context: ./src/McpTodo.ServerApp
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.server
     ports:
-      - 3000:3000
+      - 3000:8080
     networks:
       - mcp-todo
 
@@ -28,6 +28,6 @@ services:
       - path: ./.env
         required: true
     environment:
-      - McpServers__TodoList=http://todo-server:3000
+      - McpServers__TodoList=http://todo-server:8080
     networks:
       - mcp-todo
