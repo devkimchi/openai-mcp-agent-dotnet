@@ -36,7 +36,7 @@ var openAIOptions = new OpenAIClientOptions()
 var openAIClient = endpoint.TrimEnd('/').Equals("https://models.inference.ai.azure.com")
                    ? new OpenAIClient(credential, openAIOptions)
                    : new AzureOpenAIClient(new Uri(endpoint), credential);
-var chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
+var chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]!).AsIChatClient();
 
 builder.Services.AddChatClient(chatClient)
                 .UseFunctionInvocation()
@@ -51,11 +51,12 @@ builder.Services.AddSingleton<IMcpClient>(sp =>
     // var uri = new Uri("https+http://mcpserver").Resolve(config);
 
     // Without .NET Aspire
-    var uri = new Uri(config["McpServers:TodoList"]!);
+    var uri = new Uri(config["McpServers:TodoList:Url"]!);
 
     var clientTransportOptions = new SseClientTransportOptions()
     {
-        Endpoint = new Uri($"{uri.AbsoluteUri.TrimEnd('/')}/sse")
+        Endpoint = new Uri($"{uri.AbsoluteUri.TrimEnd('/')}/sse"),
+        AdditionalHeaders = new() { { "x-api-key", config["McpServers:TodoList:ApiKey"]! } }
     };
     var clientTransport = new SseClientTransport(clientTransportOptions, loggerFactory);
 

@@ -2,9 +2,10 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 
-COPY . /source
+COPY ./src/McpTodo.ServerApp /source/McpTodo.ServerApp
+COPY ./src/McpTodo.ServiceDefaults /source/McpTodo.ServiceDefaults
 
-WORKDIR /source/src/McpTodo.ServerApp
+WORKDIR /source/McpTodo.ServerApp
 
 RUN dotnet publish -c Release -o /app
 

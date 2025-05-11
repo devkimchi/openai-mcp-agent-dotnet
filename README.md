@@ -31,11 +31,11 @@ This app provides features like:
     git clone https://github.com/Azure-Samples/openai-mcp-agent-dotnet.git
     ```
 
-1. Clone the MCP server.
+<!-- 1. Clone the MCP server.
 
     ```bash
     git clone https://github.com/Azure-Samples/mcp-container-ts.git ./src/McpTodo.ServerApp
-    ```
+    ``` -->
 
 1. Add Azure OpenAI API Key.
 
@@ -45,13 +45,13 @@ This app provides features like:
 
    > **NOTE**: You can add GitHub PAT in the same format above to use GitHub Models like `Endpoint=https://models.inference.ai.azure.com;Key={{GITHUB_PAT}}`.
 
-1. Install npm packages.
+<!-- 1. Install npm packages.
 
     ```bash
     pushd ./src/McpTodo.ServerApp
     npm install
     popd
-    ```
+    ``` -->
 
 1. Install NuGet packages.
 
@@ -59,11 +59,17 @@ This app provides features like:
     dotnet restore && dotnet build
     ```
 
-1. Run the host app.
+<!-- 1. Run the server app.
 
     ```bash
     cd ./src/McpTodo.ServerApp
     npm start
+    ``` -->
+
+1. Run the server app.
+
+    ```bash
+    dotnet watch run --project ./src/McpTodo.ServerApp
     ```
 
 1. Run the client app in another terminal.
@@ -84,17 +90,47 @@ This app provides features like:
 
 ### Run it in local containers
 
+1. Make sure that you're running either Docker Desktop or Podman Desktop.
+
+1. Generate a random GUID. This GUID value will be the access key to the MCP server in the container.
+
+    ```bash
+    # bash/zsh
+    GUID=$(uuidgen)
+    ```
+
+    ```powershell
+    # PowerShell
+    $GUID = $(New-Guid).Guid
+    ```
+
+1. Add the generated GUID to be used for both MCP client and server.
+
+    ```bash
+    # For MCP client
+    dotnet user-secrets --project ./src/McpTodo.ClientApp set McpServers:TodoList:ApiKey $GUID
+
+    # For MCP server
+    dotnet user-secrets --project ./src/McpTodo.ClientApp set McpServer:ApiKey $GUID
+    ```
+
 1. Export user secrets to `.env`.
 
     ```bash
     # bash/zsh
     dotnet user-secrets list --project src/McpTodo.ClientApp \
-        | sed 's/ConnectionStrings:openai/ConnectionStrings__openai/' > .env
+        | sed 's/ConnectionStrings:openai/ConnectionStrings__openai/' \
+        | sed 's/McpServers:TodoList:ApiKey/McpServers__TodoList__ApiKey/' \
+        | sed 's/McpServer:ApiKey/McpServer__ApiKey/' \
+        > .env
     ```
 
     ```bash
     # PowerShell
-    (dotnet user-secrets list --project src/McpTodo.ClientApp).Replace("ConnectionStrings:openai", "ConnectionStrings__openai") `
+    (dotnet user-secrets list --project src/McpTodo.ClientApp) `
+        -replace "ConnectionStrings:openai", "ConnectionStrings__openai" `
+        -replace "McpServers:TodoList:ApiKey", "McpServers__TodoList__ApiKey" `
+        -replace "McpServer:ApiKey", "McpServer__ApiKey" `
         | Out-File ".env" -Force
     ```
 

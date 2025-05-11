@@ -12,6 +12,9 @@ services:
       dockerfile: Dockerfile.server
     ports:
       - 3000:8080
+    env_file:
+      - path: ./.env
+        required: true
     networks:
       - mcp-todo
 
@@ -28,6 +31,6 @@ services:
       - path: ./.env
         required: true
     environment:
-      - McpServers__TodoList=http://todo-server:8080
+      - McpServers__TodoList__Url=http://todo-server:8080
     networks:
       - mcp-todo

@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
+    <AssemblyName>McpTodo.ClientApp</AssemblyName>
+    <RootNamespace>McpTodo.ClientApp</RootNamespace>
+
     <UserSecretsId>9c68cce6-b5e1-41d4-906e-ea431ab69f47</UserSecretsId>
   </PropertyGroup>
 
