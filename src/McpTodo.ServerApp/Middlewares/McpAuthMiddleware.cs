@@ -8,7 +8,7 @@ public class McpAuthMiddleware(RequestDelegate next, IConfiguration config)
     private const string ApiKeyQueryParameterName = "code";
 
     private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
-    private readonly string _expectedApiKey = config["McpServer:ApiKey"] ?? throw new ArgumentNullException(nameof(config), "API key not found in configuration.");
+    private readonly string _expectedApiKey = config["McpServer:ApiKey"] ?? string.Empty;
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -26,19 +26,24 @@ public class McpAuthMiddleware(RequestDelegate next, IConfiguration config)
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(this._expectedApiKey))
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync("API key not set.");
+            return;
+        }
+
         var apiKey = GetApiKeyFromRequest(context.Request);
         if (string.IsNullOrWhiteSpace(apiKey))
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsync("API key not found.");
-            await this._next(context);
             return;
         }
         if (string.Equals(apiKey, this._expectedApiKey, StringComparison.InvariantCultureIgnoreCase) == false)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsync("Invalid API key.");
-            await this._next(context);
             return;
         }
 
