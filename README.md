@@ -62,7 +62,7 @@ You can now use GitHub Codespaces to run this sample app (takes several minutes 
 1. Clone this repo.
 
     ```bash
-    git clone https://github.com/Azure-Samples/openai-mcp-agent-dotnet.git
+    git clone https://github.com/devkimchi/openai-mcp-agent-dotnet.git
     ```
 
 1. Initialize `azd`.
